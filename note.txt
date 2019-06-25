@@ -1,0 +1,78 @@
+note.txt
+
+2019/06/25 11:19:28 starting...
+2019/06/25 11:19:31 r: &http.Request{Method:"GET", URL:(*url.URL)(0xc0000f6100), Proto:"HTTP/1.1", ProtoMajor:1, ProtoMinor:1, Header:http.Header{"Accept":[]string{"*/*"}, "Cache-Control":[]string{"no-cache"}, "Pragma":[]string{"no-cache"}, "User-Agent":[]string{"Mozilla/4.0"}}, Body:http.noBody{}, GetBody:(func() (io.ReadCloser, error))(nil), ContentLength:0, TransferEncoding:[]string(nil), Close:false, Host:"r.x.clwen.com", Form:url.Values(nil), PostForm:url.Values(nil), MultipartForm:(*multipart.Form)(nil), Trailer:http.Header(nil), RemoteAddr:"127.0.0.1:60804", RequestURI:"/?msg_signature=3d2a223ea8c16734138bee502c35166ed5dd6004&timestamp=1561432777&nonce=1561628896&echostr=epa%2Bq0UdhNUr1B2OPCx3DCssoRy9lHKYzyU%2FqQwbUpGhebQMqT8cjURj4wBCG68Ra81d8LybbqHWOZrBRYaWMw%3D%3D", TLS:(*tls.ConnectionState)(nil), Cancel:(<-chan struct {})(nil), Response:(*http.Response)(nil), ctx:(*context.cancelCtx)(0xc0000285c0)}
+2019/06/25 11:19:31 GET /?msg_signature=3d2a223ea8c16734138bee502c35166ed5dd6004&timestamp=1561432777&nonce=1561628896&echostr=epa%2Bq0UdhNUr1B2OPCx3DCssoRy9lHKYzyU%2FqQwbUpGhebQMqT8cjURj4wBCG68Ra81d8LybbqHWOZrBRYaWMw%3D%3D HTTP/1.1
+Host: r.x.clwen.com
+accept: */*
+pragma: no-cache
+user-agent: Mozilla/4.0
+cache-control: no-cache
+
+
+url.Values{"echostr":[]string{"epa+q0UdhNUr1B2OPCx3DCssoRy9lHKYzyU/qQwbUpGhebQMqT8cjURj4wBCG68Ra81d8LybbqHWOZrBRYaWMw=="}, "msg_signature":[]string{"3d2a223ea8c16734138bee502c35166ed5dd6004"}, "nonce":[]string{"1561628896"}, "timestamp":[]string{"1561432777"}}
+
+
+2019/06/25 11:15:29 r &{GET /?msg_signature=5bcfd94cf8bf7fd7d42dd7331a9e989007ed0b89&timestamp=1561432534&nonce=1562082170&echostr=l5IRsckb4O3KgMHlgvY%2Bik2%2BkaatGhQBpxA8H8Wb3ju79UKOytBAKUmEdk3sJEsaBcTffA4G%2FDwuAw3m3fanJg%3D%3D HTTP/1.1 1 1 map[Accept:[*/*] Cache-Control:[no-cache] Pragma:[no-cache] User-Agent:[Mozilla/4.0]] {} <nil> 0 [] false r.x.clwen.com map[] map[] <nil> map[] 127.0.0.1:59236 /?msg_signature=5bcfd94cf8bf7fd7d42dd7331a9e989007ed0b89&timestamp=1561432534&nonce=1562082170&echostr=l5IRsckb4O3KgMHlgvY%2Bik2%2BkaatGhQBpxA8H8Wb3ju79UKOytBAKUmEdk3sJEsaBcTffA4G%2FDwuAw3m3fanJg%3D%3D <nil> <nil> <nil> 0xc000130240}
+2019/06/25 11:15:29 GET /?msg_signature=5bcfd94cf8bf7fd7d42dd7331a9e989007ed0b89&timestamp=1561432534&nonce=1562082170&echostr=l5IRsckb4O3KgMHlgvY%2Bik2%2BkaatGhQBpxA8H8Wb3ju79UKOytBAKUmEdk3sJEsaBcTffA4G%2FDwuAw3m3fanJg%3D%3D HTTP/1.1
+Host: r.x.clwen.com
+accept: */*
+pragma: no-cache
+user-agent: Mozilla/4.0
+cache-control: no-cache
+
+
+
+[wen@first ~]$ ./receive 
+2019/06/25 14:59:15 starting...
+2019/06/25 15:00:00 r: &http.Request{Method:"GET", URL:(*url.URL)(0xc0000d6400), Proto:"HTTP/1.1", ProtoMajor:1, ProtoMinor:1, Header:http.Header{"Accept":[]string{"*/*"}, "Cache-Control":[]string{"no-cache"}, "Pragma":[]string{"no
+-cache"}, "User-Agent":[]string{"Mozilla/4.0"}}, Body:http.noBody{}, GetBody:(func() (io.ReadCloser, error))(nil), ContentLength:0, TransferEncoding:[]string(nil), Close:false, Host:"a.clwen.com", Form:url.Values(nil), PostForm:url.Values(nil), MultipartForm:(*multipart.Form)(nil), Trailer:http.Header(nil), RemoteAddr:"59.36.121.192:26795", RequestURI:"/?msg_signature=e6a627c085ccd82fcad38b0f05926754f6aaf2f9&timestamp=1561446000&nonce=1562161066&echostr=fgnhIOKqIY4ouqVUCDnbTfuZb0vGcfoB1rqPHLGAIVM5q6A4I%2FwaUljvTen4jFWcWPTPbLXuhaoUarSdVOlkdA%3D%3D", TLS:(*tls.ConnectionState)(nil), Cancel:(<-chan struct {})(nil), Response:(*http.Response)(nil), ctx:(*context.cancelCtx)(0xc0000525c0)}
+2019/06/25 15:00:00 GET /?msg_signature=e6a627c085ccd82fcad38b0f05926754f6aaf2f9&timestamp=1561446000&nonce=1562161066&echostr=fgnhIOKqIY4ouqVUCDnbTfuZb0vGcfoB1rqPHLGAIVM5q6A4I%2FwaUljvTen4jFWcWPTPbLXuhaoUarSdVOlkdA%3D%3D HTTP/1.1
+Host: a.clwen.com
+cache-control: no-cache
+accept: */*
+pragma: no-cache
+user-agent: Mozilla/4.0
+(main.msg) {
+ echostr: (string) (len=88) "fgnhIOKqIY4ouqVUCDnbTfuZb0vGcfoB1rqPHLGAIVM5q6A4I/waUljvTen4jFWcWPTPbLXuhaoUarSdVOlkdA==",
+ msgSignature: (string) (len=40) "e6a627c085ccd82fcad38b0f05926754f6aaf2f9",
+ nonce: (string) (len=10) "1562161066",
+ timestamp: (string) (len=10) "1561446000"
+}
+got x: 37b73f8054058e6f8882155080268763122ww89720c104a10253f len: 57, length: 19
+text: 8882155080268763122
+
+
+
+2019/06/25 15:51:22 r: &http.Request{Method:"POST", URL:(*url.URL)(0xc0000fc380), Proto:"HTTP/1.1", ProtoMajor:1, ProtoMinor:1, Header:http.Header{"Accept":[]string{"*/*"}, "Cache-Control":[]string{"no-cache"}, "Connection":[]string{"Keep-Alive"}, "Content-Length":[]string{"563"}, "Content-Type":[]string{"text/xml"}, "Pragma":[]string{"no-cache"}, "User-Agent":[]string{"Mozilla/4.0"}}, Body:(*http.body)(0xc0000287c0), GetBody:(func() (io.ReadCloser, error))(nil), ContentLength:563, TransferEncoding:[]string(nil), Close:false, Host:"r.x.clwen.com:8002", Form:url.Values(nil), PostForm:url.Values(nil), MultipartForm:(*multipart.Form)(nil), Trailer:http.Header(nil), RemoteAddr:"127.0.0.1:55528", RequestURI:"/?msg_signature=46649d06c2097327a3349738cf81eb6659e72956&timestamp=1561449087&nonce=1561671370", TLS:(*tls.ConnectionState)(nil), Cancel:(<-chan struct {})(nil), Response:(*http.Response)(nil), ctx:(*context.cancelCtx)(0xc000028800)}
+2019/06/25 15:51:22 POST /?msg_signature=46649d06c2097327a3349738cf81eb6659e72956&timestamp=1561449087&nonce=1561671370 HTTP/1.1
+Host: r.x.clwen.com:8002
+user-agent: Mozilla/4.0
+accept: */*
+connection: Keep-Alive
+pragma: no-cache
+cache-control: no-cache
+content-type: text/xml
+content-length: 563
+
+
+msg_signature=46649d06c2097327a3349738cf81eb6659e72956&nonce=1561671370&timestamp=1561449087
+2019/06/25 15:51:22 decodeuri err, uri:  echostr empty /?msg_signature=46649d06c2097327a3349738cf81eb6659e72956&timestamp=1561449087&nonce=1561671370
+
+
+
+2019/06/25 16:33:13 starting...
+2019/06/25 16:33:18 r: &http.Request{Method:"POST", URL:(*url.URL)(0xc0000fc200), Proto:"HTTP/1.1", ProtoMajor:1, ProtoMinor:1, Header:http.Header{"Accept":[]string{"*/*"}, "Cache-Control":[]string{"no-cache"}, "Connection":[]string{"Keep-Alive"}, "Content-Length":[]string{"563"}, "Content-Type":[]string{"text/xml"}, "Pragma":[]string{"no-cache"}, "User-Agent":[]string{"Mozilla/4.0"}}, Body:(*http.body)(0xc000028580), GetBody:(func() (io.ReadCloser, error))(nil), ContentLength:563, TransferEncoding:[]string(nil), Close:false, Host:"r.x.clwen.com:8002", Form:url.Values(nil), PostForm:url.Values(nil), MultipartForm:(*multipart.Form)(nil), Trailer:http.Header(nil), RemoteAddr:"127.0.0.1:16296", RequestURI:"/?msg_signature=586e9e56ed7061e48690e7a918732138c935b4dc&timestamp=1561451603&nonce=1561597366", TLS:(*tls.ConnectionState)(nil), Cancel:(<-chan struct {})(nil), Response:(*http.Response)(nil), ctx:(*context.cancelCtx)(0xc0000285c0)}
+2019/06/25 16:33:18 POST /?msg_signature=586e9e56ed7061e48690e7a918732138c935b4dc&timestamp=1561451603&nonce=1561597366 HTTP/1.1
+Host: r.x.clwen.com:8002
+accept: */*
+connection: Keep-Alive
+pragma: no-cache
+cache-control: no-cache
+content-type: text/xml
+content-length: 563
+user-agent: Mozilla/4.0
+
+
+msg_signature=586e9e56ed7061e48690e7a918732138c935b4dc&nonce=1561597366&timestamp=1561451603
+body: <xml><ToUserName><![CDATA[ww89720c104a10253f]]></ToUserName><Encrypt><![CDATA[u7hzodaBGXQY25hFBHAHZcYaP9ReHZnQhy9JooOAMrxQ1KT3Fk7L4u41kfRL5WUVbNpiLEY63Twgqk0ZbjUnupQuGO6r8VojI7zb6hBUtyoPYkuAfbMlg/9vLUVmxfKjq/zXq9f536eDMtgGn5GJtOs+L+zgfo1ezn1ViwfRhPwTOumpZWy0mU0rHlrfgokMNjhYtYIxLaCd/YTqUSSsXGeQQlkgmpShfTJ0/c1Td0mfvpZ4mtctKXWmYo+zRHpN7cC9XjnV+VTEiYRCGTtfEjBOTSLAIM49fqDt272q2G2Za0OFdg13WjccD9jB1fuI3YhkOy/zqlME3QG3b2OElznWE7/XjZcPp6dO1zrAM7WkTYrbtNwmOtgu783qWNIwQwx+sG646+3cpVIwkPbxk+0dN5jw5KsTfTMmhoSS6gc=]]></Encrypt><AgentID><![CDATA[1000003]]></AgentID></xml>
