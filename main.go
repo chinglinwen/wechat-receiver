@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -14,22 +15,56 @@ import (
 // doc: https://work.weixin.qq.com/api/doc#10514
 
 var (
+	port           = flag.String("p", ":8080", "listening address with port")
 	CorpId         = "ww89720c104a10253f" // 企业微信 corpid
 	Token          = "wjstHpLmVMj"
 	EncodingAESKey = "y4r70uH4aRkSXhfNaKXdbien8zmnMa8xmKl5bm9Il6m"
 )
 
 func main() {
+	flag.Parse()
 	log.Println("starting...")
 
-	http.Handle("/", http.HandlerFunc(receive))
-	err := http.ListenAndServe(":1323", nil)
+	http.HandleFunc("/", receiveHandler)
+	http.HandleFunc("/send", sendHandler)
+	err := http.ListenAndServe(*port, nil)
 	if err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
 }
 
-func receive(w http.ResponseWriter, r *http.Request) {
+// curl -v localhost:8080/send?content=hello
+// curl -v "localhost:8080/send?content=hello&name=10"  // send to group 10
+func sendHandler(w http.ResponseWriter, r *http.Request) {
+	name := r.FormValue("name") // name can be group
+	content := r.FormValue("content")
+
+	if content == "" {
+		err := fmt.Errorf("content is empty")
+		E(w, err)
+		return
+	}
+
+	var reply string
+	var err error
+	if name != "" {
+		reply, err = Send(content, SetReceiver(name))
+	} else {
+		reply, err = Send(content)
+	}
+	if err != nil {
+		log.Printf("send to %v, err: %v, reply: %v\n", name, reply)
+		return
+	}
+	log.Printf("send to %v ok, reply: %q\n", name, reply)
+}
+
+func E(w http.ResponseWriter, err error) {
+	log.Println(err)
+	fmt.Fprintf(w, "%v\n", err)
+}
+
+func receiveHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println(formatRequest(r))
 
 	body, _ := ioutil.ReadAll(r.Body)
@@ -60,6 +95,13 @@ func receive(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Printf("got: %#v\n", c)
+
+	reply, err := Send(fmt.Sprintf("%v says: \n---\n%v", c.FromUsername, c.Content), SetExceptMe(c.FromUsername))
+	if err != nil {
+		log.Printf("forward from %v, err: %v, reply: %v\n", c.FromUsername, reply)
+		return
+	}
+	log.Printf("forward from %v ok, reply: %q\n", c.FromUsername, reply)
 }
 
 func pretty(a interface{}) {

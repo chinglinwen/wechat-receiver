@@ -9,49 +9,6 @@ import (
 	"github.com/sbzhu/weworkapi_golang/wxbizmsgcrypt"
 )
 
-type MsgContent struct {
-	ToUsername   string `xml:"ToUserName"`
-	FromUsername string `xml:"FromUserName"`
-	CreateTime   uint32 `xml:"CreateTime"`
-	MsgType      string `xml:"MsgType"`
-	Content      string `xml:"Content"`
-	Msgid        string `xml:"MsgId"`
-	Agentid      uint32 `xml:"AgentId"`
-}
-
-func getwxcpt() *wxbizmsgcrypt.WXBizMsgCrypt {
-	return wxbizmsgcrypt.NewWXBizMsgCrypt(Token, EncodingAESKey, CorpId, wxbizmsgcrypt.XmlType)
-}
-
-// https://work.weixin.qq.com/api/doc#90000/90135/90930
-// https://sourcegraph.com/github.com/sbzhu/weworkapi_golang/-/blob/sample.go#L23:2
-func (m *msg) decodeBody(body []byte) (c MsgContent, err error) {
-	wxcpt := getwxcpt()
-	msg, crypt_err := wxcpt.DecryptMsg(m.msgSignature, m.timestamp, m.nonce, body)
-	if nil != crypt_err {
-		err = fmt.Errorf("DecryptMsg err %v", err)
-		return
-	}
-	err = xml.Unmarshal(msg, &c)
-	if nil != err {
-		err = fmt.Errorf("xmlunmarshal err %v", err)
-		return
-	}
-	return
-}
-
-// write result back to verify
-func (m *msg) verifymsg() (echo string, err error) {
-	wxcpt := getwxcpt()
-	echobyte, e := wxcpt.VerifyURL(m.msgSignature, m.timestamp, m.nonce, m.echostr)
-	if nil != e {
-		err = fmt.Errorf("verifyurl failed, err: %v", e)
-		return
-	}
-	echo = string(echobyte)
-	return
-}
-
 // https://work.weixin.qq.com/api/doc#90000/90139/90968/%E5%AF%86%E6%96%87%E8%A7%A3%E5%AF%86%E5%BE%97%E5%88%B0msg%E7%9A%84%E8%BF%87%E7%A8%8B
 // https://work.weixin.qq.com/api/devtools/devtool.php
 type msg struct {
@@ -85,16 +42,59 @@ func decodeURI(uri string) (m msg, err error) {
 		nonce:        s["nonce"],
 		timestamp:    s["timestamp"],
 	}
-	// err = m.validate()
+	err = m.validate()
 	return
 }
 
 // no need validate, normal msg does not have echostr
 func (m *msg) validate() error {
-	if m.echostr == "" {
-		return fmt.Errorf("echostr empty")
+	if m.msgSignature == "" {
+		return fmt.Errorf("msgSignature empty")
 	}
 	return nil
+}
+
+type MsgContent struct {
+	ToUsername   string `xml:"ToUserName"`
+	FromUsername string `xml:"FromUserName"`
+	CreateTime   uint32 `xml:"CreateTime"`
+	MsgType      string `xml:"MsgType"`
+	Content      string `xml:"Content"`
+	Msgid        string `xml:"MsgId"`
+	Agentid      int    `xml:"AgentID"`
+}
+
+func getwxcpt() *wxbizmsgcrypt.WXBizMsgCrypt {
+	return wxbizmsgcrypt.NewWXBizMsgCrypt(Token, EncodingAESKey, CorpId, wxbizmsgcrypt.XmlType)
+}
+
+// https://work.weixin.qq.com/api/doc#90000/90135/90930
+// https://sourcegraph.com/github.com/sbzhu/weworkapi_golang/-/blob/sample.go#L23:2
+func (m *msg) decodeBody(body []byte) (c MsgContent, err error) {
+	wxcpt := getwxcpt()
+	msg, crypt_err := wxcpt.DecryptMsg(m.msgSignature, m.timestamp, m.nonce, body)
+	if nil != crypt_err {
+		err = fmt.Errorf("DecryptMsg err %v", err)
+		return
+	}
+	err = xml.Unmarshal(msg, &c)
+	if nil != err {
+		err = fmt.Errorf("xmlunmarshal err %v", err)
+		return
+	}
+	return
+}
+
+// write result back to verify
+func (m *msg) verifymsg() (echo string, err error) {
+	wxcpt := getwxcpt()
+	echobyte, e := wxcpt.VerifyURL(m.msgSignature, m.timestamp, m.nonce, m.echostr)
+	if nil != e {
+		err = fmt.Errorf("verifyurl failed, err: %v", e)
+		return
+	}
+	echo = string(echobyte)
+	return
 }
 
 // func (m *msg) decodemsg() (text string, err error) {
