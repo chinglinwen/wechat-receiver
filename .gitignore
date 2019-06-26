@@ -1,3 +1,4 @@
 cre_test.go
 *.log
 wechat-receiver
+test.sh

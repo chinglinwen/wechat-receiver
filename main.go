@@ -19,6 +19,8 @@ var (
 	CorpId         = "ww89720c104a10253f" // 企业微信 corpid
 	Token          = "wjstHpLmVMj"
 	EncodingAESKey = "y4r70uH4aRkSXhfNaKXdbien8zmnMa8xmKl5bm9Il6m"
+
+	commanderAgentID = 1000005
 )
 
 func main() {
@@ -36,7 +38,7 @@ func main() {
 // curl -v localhost:8080/send?content=hello
 // curl -v "localhost:8080/send?content=hello&name=10"  // send to group 10
 func sendHandler(w http.ResponseWriter, r *http.Request) {
-	name := r.FormValue("name") // name can be group
+	name := r.FormValue("name") // name can be group, default to 10 the commander
 	content := r.FormValue("content")
 
 	if content == "" {
@@ -96,6 +98,9 @@ func receiveHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Printf("got: %#v\n", c)
 
+	if c.Agentid != commanderAgentID {
+		return
+	}
 	reply, err := Send(fmt.Sprintf("%v says: \n---\n%v", c.FromUsername, c.Content), SetExceptMe(c.FromUsername))
 	if err != nil {
 		log.Printf("forward from %v, err: %v, reply: %v\n", c.FromUsername, reply)
