@@ -55,10 +55,12 @@ func sendHandler(w http.ResponseWriter, r *http.Request) {
 		reply, err = Send(content)
 	}
 	if err != nil {
-		log.Printf("send to %v, err: %v, reply: %v\n", name, reply)
+		err = fmt.Errorf("send to %v, err: %v, reply: %v\n", name, reply)
+		E(w, err)
 		return
 	}
 	log.Printf("send to %v ok, reply: %q\n", name, reply)
+	fmt.Fprintf(w, "send to %v ok, reply: %q\n", name, reply)
 }
 
 func E(w http.ResponseWriter, err error) {
@@ -74,7 +76,8 @@ func receiveHandler(w http.ResponseWriter, r *http.Request) {
 
 	msg, err := decodeURI(r.RequestURI)
 	if err != nil {
-		log.Println("decodeuri err, uri: ", err, r.RequestURI)
+		err = fmt.Errorf("decodeuri err: %v, uri: %v", err, r.RequestURI)
+		E(w, err)
 		return
 	}
 	spew.Dump(msg)
@@ -82,18 +85,19 @@ func receiveHandler(w http.ResponseWriter, r *http.Request) {
 	if msg.echostr != "" {
 		text, err := msg.verifymsg()
 		if err != nil {
-			log.Println("decrypt err", err)
+			err = fmt.Errorf("decrypt err %v", err)
+			E(w, err)
 			return
 		}
 		fmt.Println("text:", text)
 		w.Write([]byte(text))
-
 		return
 	}
 
 	c, err := msg.decodeBody([]byte(body))
 	if err != nil {
-		log.Println("decodeBody err, uri: ", err, body)
+		err = fmt.Errorf("decodeBody err: %v, body: %v", err, body)
+		E(w, err)
 		return
 	}
 	fmt.Printf("got: %#v\n", c)
@@ -101,12 +105,40 @@ func receiveHandler(w http.ResponseWriter, r *http.Request) {
 	if c.Agentid != commanderAgentID {
 		return
 	}
+
+	// send normal chat back to other member
 	reply, err := Send(fmt.Sprintf("%v says: \n---\n%v", c.FromUsername, c.Content), SetExceptMe(c.FromUsername))
 	if err != nil {
-		log.Printf("forward from %v, err: %v, reply: %v\n", c.FromUsername, reply)
+		err = fmt.Errorf("forward from %v, err: %v, reply: %v\n", c.FromUsername, reply)
+		E(w, err)
 		return
 	}
 	log.Printf("forward from %v ok, reply: %q\n", c.FromUsername, reply)
+
+	// if it's a command send it to commander service
+	if !iscmd(c.Content) {
+		return
+	}
+
+	// send cmd to backend
+	output, err := sendcmd(c.FromUsername, c.Content)
+	if err != nil {
+		err = fmt.Errorf("sendcmd from %v, err: %v, reply: %v\n", c.FromUsername, output)
+		E(w, err)
+		return
+	}
+	log.Printf("sendcmd from %v ok, reply: %q\n", c.FromUsername, output)
+
+	// send result back to chat
+	reply, err = Send(fmt.Sprintf("results: \n---\n%v", output))
+	if err != nil {
+		err = fmt.Errorf("sendresult from %v, err: %v, reply: %v\n", reply)
+		E(w, err)
+		return
+	}
+	log.Printf("sendresult from %v ok, reply: %q\n", c.FromUsername, reply)
+
+	fmt.Fprintf(w, "received ok\n")
 }
 
 func pretty(a interface{}) {

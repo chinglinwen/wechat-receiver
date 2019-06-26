@@ -2,7 +2,9 @@
 #   -r wenzhenglin \
 go build
 ./wechat-receiver \
-  -w http://localhost:8001 \
+  -w http://wechat-notify.haodai.net \
   -agentid 1000005 \
   -secret 3Kds9ib-5JwY7-DrlxGIBq7XOjYDf846W3_Tda2sLe0 \
-  -party 10
+  -party 2
+  # -r wenzhenglin
+  # -party 10
