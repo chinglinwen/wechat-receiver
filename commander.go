@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"regexp"
+	"strings"
 
 	resty "gopkg.in/resty.v1"
 )
@@ -38,10 +39,10 @@ func sendcmd(name, cmd string) (reply string, err error) {
 		return
 	}
 	if r.Error != "" {
-		err = fmt.Errorf("cmd err: ", r.Error)
+		err = fmt.Errorf("cmd err: %v", r.Error)
 		return
 	}
-	reply = r.Data
+	reply = strings.TrimSuffix(r.Data, "\n")
 	return
 }
 

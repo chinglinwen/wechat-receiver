@@ -109,7 +109,7 @@ func receiveHandler(w http.ResponseWriter, r *http.Request) {
 	// send normal chat back to other member
 	reply, err := Send(fmt.Sprintf("%v says: \n---\n%v", c.FromUsername, c.Content), SetExceptMe(c.FromUsername))
 	if err != nil {
-		err = fmt.Errorf("forward from %v, err: %v, reply: %v\n", c.FromUsername, reply)
+		err = fmt.Errorf("forward from %v, err: %v, reply: %v\n", c.FromUsername, err, reply)
 		E(w, err)
 		return
 	}
@@ -123,16 +123,17 @@ func receiveHandler(w http.ResponseWriter, r *http.Request) {
 	// send cmd to backend
 	output, err := sendcmd(c.FromUsername, c.Content)
 	if err != nil {
-		err = fmt.Errorf("sendcmd from %v, err: %v, reply: %v\n", c.FromUsername, output)
-		E(w, err)
-		return
+		// err = fmt.Errorf("sendcmd from %v, err: %v, reply: %v\n", c.FromUsername, err, output)
+		// E(w, err)
+		// return
+		output = err.Error()
 	}
 	log.Printf("sendcmd from %v ok, reply: %q\n", c.FromUsername, output)
 
 	// send result back to chat
 	reply, err = Send(fmt.Sprintf("results: \n---\n%v", output))
 	if err != nil {
-		err = fmt.Errorf("sendresult from %v, err: %v, reply: %v\n", reply)
+		err = fmt.Errorf("sendresult from %v, err: %v, reply: %v\n", c.FromUsername, err, reply)
 		E(w, err)
 		return
 	}
