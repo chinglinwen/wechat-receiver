@@ -39,7 +39,7 @@ func sendcmd(name, cmd string) (reply string, err error) {
 		return
 	}
 	if r.Error != "" {
-		err = fmt.Errorf("cmd err: %v", r.Error)
+		err = fmt.Errorf("cmd err: %v", strings.TrimSuffix(r.Error, "\n"))
 		return
 	}
 	reply = strings.TrimSuffix(r.Data, "\n")
