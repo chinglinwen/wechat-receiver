@@ -15,13 +15,29 @@ var (
 	wechatNotifyURL = flag.String("w", "http://localhost:8001", "wechat notify service url")
 	receiver        = flag.String("r", "", "default wechat receiver")
 	receiverParty   = flag.String("party", "10", "default receiver party ( eg. 3 )")
-	agentid         = flag.String("agentid", "", "default agentid ( eg. 1000003 )")
-	secret          = flag.String("secret", "", "default secret ( eg. G5h7CTEqkBw-Fe3luf2JM8UNNJAcYTpbXvpveY7M3lg )")
-	agentidDev      = flag.String("appAgentid", "", "default agentid for dev ( eg. 1000003 )")
-	secretDev       = flag.String("appSecret", "", "default secret for dev ( eg. G5h7CTEqkBw-Fe3luf2JM8UNNJAcYTpbXvpveY7M3lg )")
+	agentid         = flag.String("agentid", "", "commander agentid ( eg. 1000003 )")
+	secret          = flag.String("secret", "", "commander secret ( eg. G5h7CTEqkBw-Fe3luf2JM8UNNJAcYTpbXvpveY7M3lg )")
+	agentidDev      = flag.String("appAgentid", "", "agentid for dev ( eg. 1000003 )")
+	secretDev       = flag.String("appSecret", "", "secret for dev ( eg. G5h7CTEqkBw-Fe3luf2JM8UNNJAcYTpbXvpveY7M3lg )")
 
 	expire = flag.String("e", "10m", "default expire time duration")
 )
+
+func validate() (err error) {
+	if *agentid == "" {
+		return fmt.Errorf("agentid is empty")
+	}
+	if *secret == "" {
+		return fmt.Errorf("secret is empty")
+	}
+	if *agentidDev == "" {
+		return fmt.Errorf("agentidDev is empty")
+	}
+	if *secretDev == "" {
+		return fmt.Errorf("secretDev is empty")
+	}
+	return nil
+}
 
 type sendconfig struct {
 	touser   string
@@ -82,6 +98,15 @@ func Send(message string, options ...sendoption) (reply string, err error) {
 		sec = *secretDev
 	}
 
+	if id == "" {
+		err = fmt.Errorf("agentid is empty")
+		return
+	}
+	if sec == "" {
+		err = fmt.Errorf("secret is empty")
+		return
+	}
+
 	// now := time.Now().Format("2006-1-2 15:04:05")
 	// precontent := fmt.Sprintf("时间: %v\n", now)
 
@@ -97,7 +122,7 @@ func Send(message string, options ...sendoption) (reply string, err error) {
 			"secret":  sec,
 			// "precontent": precontent,
 			"content":  message,
-			"expire":   *expire,
+			"expire":   "3s", // set to short
 			"exceptme": c.exceptme,
 		}).
 		Get(*wechatNotifyURL)

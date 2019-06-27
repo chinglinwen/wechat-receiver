@@ -26,6 +26,10 @@ func main() {
 	flag.Parse()
 	log.Println("starting...")
 
+	if err := validate(); err != nil {
+		log.Fatal(err)
+	}
+
 	http.HandleFunc("/", receiveHandler)
 	http.HandleFunc("/send", sendHandler)
 	http.HandleFunc("/dev", sendFromDevHandler)
