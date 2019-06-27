@@ -1,6 +1,7 @@
 # wechat-receiver
 Work wechat receiver
 
+> working with https://github.com/chinglinwen/wxrobot-backend
 
 
 ## Screenshots
