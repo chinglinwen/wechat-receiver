@@ -32,10 +32,14 @@ func sendcmd(name, cmd string) (reply string, err error) {
 		err = e
 		return
 	}
+	return parseBody(resp.Body())
+}
+
+func parseBody(body []byte) (reply string, err error) {
 	r := &Result{}
-	err = json.Unmarshal(resp.Body(), r)
+	err = json.Unmarshal(body, r)
 	if err != nil {
-		err = fmt.Errorf("unmarshal result err: %v", err, string(resp.Body()))
+		err = fmt.Errorf("unmarshal result err: %v, body: %v", err, string(body))
 		return
 	}
 	if r.Error != "" {

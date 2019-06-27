@@ -3,6 +3,8 @@ package main
 
 import (
 	"flag"
+	"fmt"
+	"log"
 	"regexp"
 	"strings"
 
@@ -15,6 +17,8 @@ var (
 	receiverParty   = flag.String("party", "10", "default receiver party ( eg. 3 )")
 	agentid         = flag.String("agentid", "", "default agentid ( eg. 1000003 )")
 	secret          = flag.String("secret", "", "default secret ( eg. G5h7CTEqkBw-Fe3luf2JM8UNNJAcYTpbXvpveY7M3lg )")
+	agentidDev      = flag.String("appAgentid", "", "default agentid for dev ( eg. 1000003 )")
+	secretDev       = flag.String("appSecret", "", "default secret for dev ( eg. G5h7CTEqkBw-Fe3luf2JM8UNNJAcYTpbXvpveY7M3lg )")
 
 	expire = flag.String("e", "10m", "default expire time duration")
 )
@@ -23,6 +27,7 @@ type sendconfig struct {
 	touser   string
 	toparty  string
 	exceptme string
+	app      string // commmander or dev
 }
 
 type sendoption func(*sendconfig)
@@ -37,6 +42,12 @@ func SetReceiver(receiver string) sendoption {
 		}
 		c.touser = receiver
 		c.toparty = ""
+	}
+}
+
+func SetApp(app string) sendoption {
+	return func(c *sendconfig) {
+		c.app = app
 	}
 }
 
@@ -57,6 +68,20 @@ func Send(message string, options ...sendoption) (reply string, err error) {
 	for _, option := range options {
 		option(c)
 	}
+	if c.touser == "" && c.toparty == "" {
+		err = fmt.Errorf("empty user and party, will not send")
+		return
+	}
+
+	// default to commander
+	id := *agentid
+	sec := *secret
+	if c.app == devApp {
+		log.Println("send to devapp")
+		id = *agentidDev
+		sec = *secretDev
+	}
+
 	// now := time.Now().Format("2006-1-2 15:04:05")
 	// precontent := fmt.Sprintf("时间: %v\n", now)
 
@@ -68,8 +93,8 @@ func Send(message string, options ...sendoption) (reply string, err error) {
 				SetQueryParams(map[string]string{
 			"user":    c.touser,
 			"toparty": c.toparty,
-			"agentid": *agentid,
-			"secret":  *secret,
+			"agentid": id,
+			"secret":  sec,
 			// "precontent": precontent,
 			"content":  message,
 			"expire":   *expire,
