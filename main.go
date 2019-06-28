@@ -9,7 +9,7 @@ import (
 // doc: https://work.weixin.qq.com/api/doc#10514
 
 var (
-	port           = flag.String("p", ":8080", "listening address with port")
+	port           = flag.String("p", ":8002", "listening address with port")
 	CorpId         = "ww89720c104a10253f" // 企业微信 corpid
 	Token          = "wjstHpLmVMj"
 	EncodingAESKey = "y4r70uH4aRkSXhfNaKXdbien8zmnMa8xmKl5bm9Il6m"
