@@ -14,11 +14,14 @@ import (
 var (
 	wechatNotifyURL = flag.String("w", "http://localhost:8001", "wechat notify service url")
 	receiver        = flag.String("r", "", "default wechat receiver")
-	receiverParty   = flag.String("party", "10", "default receiver party ( eg. 3 )")
-	agentid         = flag.String("agentid", "", "commander agentid ( eg. 1000003 )")
-	secret          = flag.String("secret", "", "commander secret ( eg. G5h7CTEqkBw-Fe3luf2JM8UNNJAcYTpbXvpveY7M3lg )")
-	agentidDev      = flag.String("appAgentid", "", "agentid for dev ( eg. 1000003 )")
-	secretDev       = flag.String("appSecret", "", "secret for dev ( eg. G5h7CTEqkBw-Fe3luf2JM8UNNJAcYTpbXvpveY7M3lg )")
+
+	receiverParty = flag.String("party", "10", "default receiver party ( eg. 3 )")
+	agentid       = flag.String("agentid", "", "commander agentid ( eg. 1000003 )")
+	secret        = flag.String("secret", "", "commander secret ( eg. G5h7CTEqkBw-Fe3luf2JM8UNNJAcYTpbXvpveY7M3lg )")
+
+	receiverPartyDev = flag.String("partyDev", "10", "default receiver party for dev( eg. 3 )")
+	agentidDev       = flag.String("agentidDev", "", "agentid for dev ( eg. 1000003 )")
+	secretDev        = flag.String("secretDev", "", "secret for dev ( eg. G5h7CTEqkBw-Fe3luf2JM8UNNJAcYTpbXvpveY7M3lg )")
 
 	expire = flag.String("e", "10m", "default expire time duration")
 )
