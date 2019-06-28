@@ -34,11 +34,11 @@ func runCommander(w http.ResponseWriter, c MsgContent) {
 	// send result back to chat
 	reply, err = Send(fmt.Sprintf("results: \n---\n%v", output), SetApp(devApp))
 	if err != nil {
-		err = fmt.Errorf("sendresult from %v, err: %v, reply: %v\n", c.FromUsername, err, reply)
+		err = fmt.Errorf("sendresult to %v, err: %v, reply: %v\n", c.FromUsername, err, reply)
 		E(w, err)
 		return
 	}
-	log.Printf("sendresult from %v ok, reply: %q\n", c.FromUsername, reply)
+	log.Printf("sendresult to %v ok, reply: %q\n", c.FromUsername, reply)
 
 	return
 }
@@ -55,6 +55,7 @@ func isops(name string) bool {
 	return false
 }
 func getGroupExceptMe(name string) string {
+	name = convert(name)
 	ops1 := append(ops, name)
 	ops2 := []string{}
 	for _, v := range ops1 {
@@ -67,6 +68,7 @@ func getGroupExceptMe(name string) string {
 }
 
 func getGroupWithMe(name string) string {
+	name = convert(name)
 	if isops(name) {
 		return strings.Join(ops, "|")
 	}
@@ -81,15 +83,21 @@ func getGroupOps() string {
 // anyone in yuwei can reply to that person
 // we need extra except me, and can't use party as target
 func runDev(w http.ResponseWriter, c MsgContent) {
+	name := convertback(c.FromUsername)
+
+	if c.Content == "" {
+		log.Printf("got empty content from %v, skip", name)
+		return
+	}
 	// send normal chat back to other member
 	g := getGroupExceptMe(c.FromUsername)
 	if g != "" {
-		reply, err := Send(fmt.Sprintf("%v says: \n---\n%v", c.FromUsername, c.Content), SetApp(devApp), SetReceiver(g))
+		reply, err := Send(fmt.Sprintf("%v says: \n---\n%v", name, c.Content), SetApp(devApp), SetReceiver(g))
 		if err != nil {
-			err = fmt.Errorf("forward from %v, err: %v, reply: %v\n", c.FromUsername, err, reply)
+			err = fmt.Errorf("forward from %v, err: %v, reply: %v\n", name, err, reply)
 			log.Println(err)
 		} else {
-			log.Printf("forward from %v ok, reply: %q\n", c.FromUsername, reply)
+			log.Printf("forward from %v ok, reply: %q\n", name, reply)
 		}
 	} else {
 		log.Println("no others member to send, skip forward")
@@ -102,23 +110,23 @@ func runDev(w http.ResponseWriter, c MsgContent) {
 	}
 
 	// send cmd to backend
-	output, err := sendRelease(c.FromUsername, c.Content)
+	output, err := sendRelease(name, c.Content)
 	if err != nil {
 		// err = fmt.Errorf("sendcmd from %v, err: %v, reply: %v\n", c.FromUsername, err, output)
 		// E(w, err)
 		// return
 		output = err.Error()
 	}
-	log.Printf("sendRelease from %v ok, reply: %q\n", c.FromUsername, output)
+	log.Printf("sendRelease from %v ok, reply: %q\n", name, output)
 
 	// send result back to chat
-	reply, err := Send(fmt.Sprintf("results: \n---\n%v", output), SetApp(devApp), SetReceiver(getGroupWithMe(c.FromUsername)))
+	reply, err := Send(fmt.Sprintf("results: \n---\n%v", output), SetApp(devApp), SetReceiver(getGroupWithMe(name)))
 	if err != nil {
-		err = fmt.Errorf("sendresult from %v, err: %v, reply: %v\n", c.FromUsername, err, reply)
+		err = fmt.Errorf("sendresult to %v, err: %v, reply: %v\n", name, err, reply)
 		E(w, err)
 		return
 	}
-	log.Printf("sendresult from %v ok, reply: %q\n", c.FromUsername, reply)
+	log.Printf("sendresult to %v ok, reply: %q\n", name, reply)
 
 	return
 }

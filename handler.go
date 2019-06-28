@@ -7,14 +7,14 @@ import (
 	"log"
 	"net/http"
 	"strings"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 func sendFromDevHandler(w http.ResponseWriter, r *http.Request) {
 	name := r.FormValue("name") // name can be group, default to 10 the commander
 	content := r.FormValue("content")
 	// withops := r.FormValue("ops") // send to ops too
+
+	name = convert(name)
 
 	if content == "" {
 		err := fmt.Errorf("content is empty")
@@ -25,17 +25,17 @@ func sendFromDevHandler(w http.ResponseWriter, r *http.Request) {
 	var reply string
 	var err error
 	if name != "" {
-		reply, err = Send(content, SetReceiver(getGroupWithMe(name)))
+		reply, err = Send(content, SetApp(devApp), SetReceiver(getGroupWithMe(name)))
 	} else {
-		reply, err = Send(content, SetReceiver(getGroupOps()))
+		reply, err = Send(content, SetApp(devApp), SetReceiver(getGroupOps()))
 	}
 	if err != nil {
 		err = fmt.Errorf("send to %v, err: %v, reply: %v\n", name, err, reply)
 		E(w, err)
 		return
 	}
-	log.Printf("send to %v ok, reply: %q\n", name, reply)
-	fmt.Fprintf(w, "send to %v ok, reply: %q\n", name, reply)
+	log.Printf("send to dev %v ok, reply: %q\n", name, reply)
+	fmt.Fprintf(w, "send to dev %v ok, reply: %q\n", name, reply)
 }
 
 // curl -v localhost:8080/send?content=hello
@@ -72,10 +72,9 @@ func E(w http.ResponseWriter, err error) {
 }
 
 func receiveHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println(formatRequest(r))
-
+	// log.Println(formatRequest(r))
 	body, _ := ioutil.ReadAll(r.Body)
-	fmt.Println("body:", string(body))
+	// fmt.Println("body:", string(body))
 
 	msg, err := decodeURI(r.RequestURI)
 	if err != nil {
@@ -83,7 +82,7 @@ func receiveHandler(w http.ResponseWriter, r *http.Request) {
 		E(w, err)
 		return
 	}
-	spew.Dump(msg)
+	// spew.Dump(msg)
 
 	if msg.echostr != "" {
 		text, err := msg.verifymsg()
@@ -103,14 +102,20 @@ func receiveHandler(w http.ResponseWriter, r *http.Request) {
 		E(w, err)
 		return
 	}
-	fmt.Printf("got: %#v\n", c)
+	fmt.Printf("\n\nnewmsg from: %v, text: %v\n", c.FromUsername, c.Content)
 
-	if c.Agentid == commanderAgentID {
-		runCommander(w, c)
-	}
-	if c.Agentid == devAgentID {
-		runDev(w, c)
-	}
+	// https://work.weixin.qq.com/api/doc#10514
+	// need to return in 5 seconds, so to avoid later resend
+	go func() {
+		if c.Agentid == commanderAgentID {
+			log.Println("it's for commanderApp")
+			runCommander(w, c)
+		}
+		if c.Agentid == devAgentID {
+			log.Println("it's for devApp")
+			runDev(w, c)
+		}
+	}()
 
 	fmt.Fprintf(w, "received ok\n")
 }

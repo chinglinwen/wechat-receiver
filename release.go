@@ -1,7 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
+	"fmt"
+	"strings"
 
 	resty "gopkg.in/resty.v1"
 )
@@ -25,5 +28,19 @@ func sendRelease(name, cmd string) (reply string, err error) {
 		err = e
 		return
 	}
-	return parseBody(resp.Body())
+	return parseReleaseBody(resp.Body())
+}
+func parseReleaseBody(body []byte) (reply string, err error) {
+	r := &Result{}
+	err = json.Unmarshal(body, r)
+	if err != nil {
+		err = fmt.Errorf("unmarshal result err: %v, body: %v", err, string(body))
+		return
+	}
+	if r.Error != "" {
+		err = fmt.Errorf("err: %v", strings.TrimSuffix(r.Error, "\n"))
+		return
+	}
+	reply = strings.TrimSuffix(r.Data, "\n")
+	return
 }
