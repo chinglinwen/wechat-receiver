@@ -99,6 +99,7 @@ func Send(message string, options ...sendoption) (reply string, err error) {
 		log.Println("send to devapp")
 		id = *agentidDev
 		sec = *secretDev
+		c.toparty = *receiverPartyDev
 	}
 
 	if id == "" {
