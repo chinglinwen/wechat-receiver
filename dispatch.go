@@ -32,7 +32,7 @@ func runCommander(w http.ResponseWriter, c MsgContent) {
 	log.Printf("sendcmd from %v ok, reply: %q\n", c.FromUsername, output)
 
 	// send result back to chat
-	reply, err = Send(fmt.Sprintf("results: \n---\n%v", output), SetApp(devApp))
+	reply, err = Send(fmt.Sprintf("results: \n---\n%v", output), SetApp(commanderApp))
 	if err != nil {
 		err = fmt.Errorf("sendresult to %v, err: %v, reply: %v\n", c.FromUsername, err, reply)
 		E(w, err)
