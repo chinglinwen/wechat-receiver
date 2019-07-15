@@ -20,7 +20,7 @@ func sendRelease(name, cmd string) (reply string, err error) {
 				SetRedirectPolicy(resty.FlexibleRedirectPolicy(20)).
 				R().
 				SetQueryParams(map[string]string{
-			"from": convert(name),
+			"from": convertback(name),
 			"cmd":  cmd,
 		}).
 		Get(*releaseURL)
