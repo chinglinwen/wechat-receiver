@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	releaseURL = flag.String("releaseurl", "http://build.newops.haodai.net/api/wechat", "release url")
+	releaseURL = flag.String("releaseurl", "http://release.haodai.net/api/wechat", "release url")
 )
 
 // send request to self-release
