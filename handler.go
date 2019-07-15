@@ -41,7 +41,7 @@ func sendFromDevHandler(w http.ResponseWriter, r *http.Request) {
 // curl -v localhost:8080/send?content=hello
 // curl -v "localhost:8080/send?content=hello&name=10"  // send to group 10
 func sendHandler(w http.ResponseWriter, r *http.Request) {
-	name := r.FormValue("name") // name can be group, default to 10 the commander
+	name := convertback(r.FormValue("name")) // name can be group, default to 10 the commander
 	content := r.FormValue("content")
 
 	if content == "" {

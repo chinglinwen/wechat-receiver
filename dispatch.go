@@ -83,7 +83,7 @@ func getGroupOps() string {
 // anyone in yuwei can reply to that person
 // we need extra except me, and can't use party as target
 func runDev(w http.ResponseWriter, c MsgContent) {
-	name := convertback(c.FromUsername)
+	name := c.FromUsername
 
 	if c.Content == "" {
 		log.Printf("got empty content from %v, skip", name)

@@ -1,5 +1,7 @@
 package main
 
+import "log"
+
 var converts = map[string]string{
 	"wenzhenglin": "wen",
 	"xiaoli":      "robot",
@@ -8,6 +10,7 @@ var converts = map[string]string{
 func getback(name string) string {
 	for k, v := range converts {
 		if v == name {
+			log.Printf("convertback name %v -> %v\n", name, k)
 			return k
 		}
 	}
@@ -20,6 +23,7 @@ func convert(name string) string {
 	// 	return "wen"
 	// }
 	if v, ok := converts[name]; ok {
+		log.Printf("convert name %v -> %v\n", name, v)
 		return v
 	}
 	return name
