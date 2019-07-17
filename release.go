@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"log"
 	"strings"
 
 	resty "gopkg.in/resty.v1"
@@ -34,7 +35,9 @@ func parseReleaseBody(body []byte) (reply string, err error) {
 	r := &Result{}
 	err = json.Unmarshal(body, r)
 	if err != nil {
-		err = fmt.Errorf("unmarshal result err: %v, body: %v", err, string(body))
+		err = fmt.Errorf("release service may not running, err: %v", string(body))
+		log.Println(err)
+		log.Printf("send to reelase response body unmarshal err: ", err)
 		return
 	}
 	if r.Error != "" {
