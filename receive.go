@@ -65,7 +65,7 @@ type MsgContent struct {
 }
 
 func getwxcpt() *wxbizmsgcrypt.WXBizMsgCrypt {
-	return wxbizmsgcrypt.NewWXBizMsgCrypt(Token, EncodingAESKey, CorpId, wxbizmsgcrypt.XmlType)
+	return wxbizmsgcrypt.NewWXBizMsgCrypt(*Token, *EncodingAESKey, *CorpId, wxbizmsgcrypt.XmlType)
 }
 
 // https://work.weixin.qq.com/api/doc#90000/90135/90930

@@ -37,7 +37,7 @@ func parseReleaseBody(body []byte) (reply string, err error) {
 	if err != nil {
 		err = fmt.Errorf("release service may not running, err: %v", string(body))
 		log.Println(err)
-		log.Printf("send to reelase response body unmarshal err: ", err)
+		log.Printf("send to reelase response body unmarshal err: %v\n", err)
 		return
 	}
 	if r.Error != "" {

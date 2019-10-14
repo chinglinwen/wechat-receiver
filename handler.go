@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -107,11 +108,11 @@ func receiveHandler(w http.ResponseWriter, r *http.Request) {
 	// https://work.weixin.qq.com/api/doc#10514
 	// need to return in 5 seconds, so to avoid later resend
 	go func() {
-		if c.Agentid == commanderAgentID {
+		if strconv.Itoa(c.Agentid) == *agentid {
 			log.Println("it's for commanderApp")
 			runCommander(w, c)
 		}
-		if c.Agentid == devAgentID {
+		if strconv.Itoa(c.Agentid) == *agentidDev {
 			log.Println("it's for devApp")
 			runDev(w, c)
 		}

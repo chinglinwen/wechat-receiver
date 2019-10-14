@@ -6,11 +6,11 @@ metadata:
   namespace: yunwei
 spec:
   ports:
-  - name: web
-    port: 80
-    targetPort: 8002
-    protocol: TCP
-    nodePort: 37005
+    - name: web
+      port: 80
+      targetPort: 8002
+      protocol: TCP
+      nodePort: 37005
   selector:
     app: wechat-receiver
   sessionAffinity: ClientIP
@@ -25,17 +25,17 @@ metadata:
   name: wechat-receiver
   namespace: yunwei
   # annotations:
-    #traefik.ingress.kubernetes.io/frontend-entry-points: http,https
-    # traefik.ingress.kubernetes.io/redirect-entry-point: https
+  #traefik.ingress.kubernetes.io/frontend-entry-points: http,https
+  # traefik.ingress.kubernetes.io/redirect-entry-point: https
 spec:
   rules:
-  - host: wechat-receiver-test.newops.haodai.net
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: wechat-receiver
-          servicePort: web
+    - host: wechat-receiver-test.newops.haodai.net
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: wechat-receiver
+              servicePort: web
 ---
 apiVersion: apps/v1beta1
 kind: Deployment
@@ -60,24 +60,30 @@ spec:
           imagePullPolicy: Always
           # command: ["/bin/sh","-c","sleep 3600000"]
           args:
-          - -w 
-          - http://wechat-notify.haodai.net
-          - -agentid
-          - "1000005"
-          - -secret
-          - 3Kds9ib-5JwY7-DrlxGIBq7XOjYDf846W3_Tda2sLe0
-          - -agentidDev
-          - "1000006"
-          - -secretDev
-          - zfLrCAxVHJxXhKk636krUtRwg0wxDO3EAUpihGw19AA
-          - -party
-          - "2"
-          - -partyDev
-          - "10"
-          - -backendurl
-          - http://wechat-commander.newops.haodai.net/
+            - -coprid
+            - ww89720c104a10253f
+            - -token
+            - wjstHpLmVMj
+            - -aeskey
+            - y4r70uH4aRkSXhfNaKXdbien8zmnMa8xmKl5bm9Il6m
+            - -w
+            - http://wechat-notify.haodai.net
+            - -agentid
+            - "1000005"
+            - -secret
+            - 3Kds9ib-5JwY7-DrlxGIBq7XOjYDf846W3_Tda2sLe0
+            - -agentidDev
+            - "1000006"
+            - -secretDev
+            - zfLrCAxVHJxXhKk636krUtRwg0wxDO3EAUpihGw19AA
+            - -party
+            - "2"
+            - -partyDev
+            - "10"
+            - -backendurl
+            - http://wechat-commander.newops.haodai.net/
           ports:
-          - containerPort: 8002
+            - containerPort: 8002
       nodeSelector:
         #kubernetes.io/hostname: 172.31.90.208
         func: monitor

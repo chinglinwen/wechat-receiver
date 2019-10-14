@@ -1,0 +1,29 @@
+---
+# Endpoints
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: wechat-receiver
+  namespace: yunwei
+subsets:
+  - addresses:
+      - ip: 192.168.10.234
+    ports:
+      - port: 8002
+
+# Service
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: wechat-receiver
+  namespace: yunwei
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8002
+      nodePort: 37005
+  sessionAffinity: ClientIP
+  type: NodePort
+# we use extra nginx, since it need external ip
