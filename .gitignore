@@ -3,5 +3,4 @@ cre_test.go
 wechat-receiver
 test.sh
 
-wechat-receiver.yaml
 *_cre.sh
