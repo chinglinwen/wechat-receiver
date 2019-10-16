@@ -82,6 +82,8 @@ spec:
             - "10"
             - -backendurl
             - http://wechat-commander.newops.haodai.net/
+            - -releaseurl
+            - http://release.haodai.net/api/wechat
           ports:
             - containerPort: 8002
       nodeSelector:
